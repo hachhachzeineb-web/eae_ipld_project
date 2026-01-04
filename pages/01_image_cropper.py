@@ -34,14 +34,41 @@ else:
 st.image(img_arr, caption="Original Image" if not is_example else "Original example image", width="content")
 st.write("#")
 
+max_height, max_width = img_arr.shape[0], img_arr.shape[1]
+
+st.subheader("Crop settings")
+
+crop_min_h = st.slider("crop_min_h (top)", 0, max_height - 1, 0)
+crop_max_h = st.slider("crop_max_h (bottom)", crop_min_h + 1, max_height, max_height)
+
+crop_min_w = st.slider("crop_min_w (left)", 0, max_width - 1, 0)
+crop_max_w = st.slider("crop_max_w (right)", crop_min_w + 1, max_width, max_width)
+
+crop_arr = img_arr[crop_min_h:crop_max_h, crop_min_w:crop_max_w]
+
+st.image(crop_arr, caption="Cropped Image")
+st.write("#")
+
+crop_img = Image.fromarray(crop_arr)
+
+buffer = io.BytesIO()
+crop_img.save(buffer, format="PNG")
+buffer.seek(0)
+
+st.download_button(
+    label="Download cropped image (PNG)",
+    data=buffer,
+    file_name="cropped_image.png",
+    mime="image/png",
+)
 
 # TODO: Ex. 1.1: Get the minimum and maximum values for the vertical and horizontal ranges, so the size of the img_arr array -----
 
 min_height = 0 
-max_height = None   # TODO: Replace None with the maximum height of the image using np.shape() function
+max_height = img_arr.shape[0]
 
 min_width = 0
-max_width = None    # TODO: Replace None with the maximum width of the image using np.shape() function   
+max_width = img_arr.shape[1]
 
 
 # ----- Creating the sliders to receive the user input with the dimensions to crop the image ----- 
@@ -63,13 +90,13 @@ else:
 
 # TODO: Ex. 1.3: Crop the image array img_arr using the crop_min_h, crop_max_h, crop_min_w and crop_max_w values -----
 
-crop_arr = None  # TODO: Generate the crop array into a new variable, use NumPy array slicing
+crop_arr = img_arr[crop_min_h:crop_max_h, crop_min_w:crop_max_w]
 
 
 # ----- Displaying the cropped image and creating a download button to download the image -----
 
 if type(crop_arr) == np.ndarray:
-    st.image(crop_arr, caption="Cropped Image", use_column_width=True)
+    st.image(crop_arr, caption="Cropped Image", width="content")
 
     buf = io.BytesIO()
     Image.fromarray(crop_arr).save(buf, format="PNG")
@@ -82,3 +109,5 @@ if type(crop_arr) == np.ndarray:
 
 else:
     st.subheader("⚠️ You still need to develop the Ex 1.3.")
+
+
