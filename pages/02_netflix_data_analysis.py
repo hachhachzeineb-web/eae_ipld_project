@@ -130,4 +130,3 @@ if movies_avg_duration_per_year is not None:
 else:
     st.subheader("⚠️ You still need to develop the Ex 2.7.")
 
-
